@@ -1,17 +1,19 @@
-import calendarStore from "./calendar-store";
-const { date } = calendarStore;
+import { createMemo } from "solid-js";
+
+import languageStore from "./language-store";
+import { getDays } from "./utils";
+
+const { languageCode } = languageStore;
 
 export const CalendarHeader = () => {
+    const days = createMemo(() => getDays(languageCode()));
+
     return (
         <thead>
             <tr>
-                <th>M</th>
-                <th>Tu</th>
-                <th>W</th>
-                <th>Th</th>
-                <th>F</th>
-                <th>Sa</th>
-                <th>Su</th>
+                {days().map((day) => {
+                    return <th>{day}</th>;
+                })}
             </tr>
         </thead>
     );

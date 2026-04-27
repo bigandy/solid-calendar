@@ -9,7 +9,39 @@
         padding: 1rem;
     }
 
+    button {
+        border: 1px solid;
+    }
+
+    select {
+        border-radius: 0;
+        font-size: 13.3333px;
+        font-family: var(--sans);
+        padding: 0.9em;
+        color: black;
+    }
+
+    option {
+        font-family: var(--sans);
+        /* Not working?! */
+        text-align: center;
+        display: block;
+    }
+
+    option:checked {
+        background: greenyellow;
+    }
+
+    option::checkmark {
+        display: none;
+    }
+
     + h2 {
         margin-block-end: 1rem;
     }
+}
+
+select,
+::picker(select) {
+    appearance: base;
 }

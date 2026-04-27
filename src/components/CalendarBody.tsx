@@ -1,11 +1,13 @@
 import { createMemo, For } from "solid-js";
 import calendarStore from "./calendar-store";
+import languageStore from "./language-store";
 import { getWeeks } from "./utils";
 
 const { date } = calendarStore;
+const { languageCode } = languageStore;
 
 export const CalendarBody = () => {
-    const weeks = createMemo(() => getWeeks(date()));
+    const weeks = createMemo(() => getWeeks(date(), languageCode()));
 
     return (
         <tbody class="calendar-body">

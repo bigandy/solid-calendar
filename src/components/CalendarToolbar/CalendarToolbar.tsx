@@ -1,8 +1,12 @@
+import { createMemo } from "solid-js";
 import calendarStore from "../calendar-store";
+import languageStore from "../language-store";
 
 import "./style.css";
 
 const { date, setDate, isToday, resetDate } = calendarStore;
+
+const { languageCode, setLanguageCode } = languageStore;
 
 export const CalendarToolbar = () => {
     const prevMonth = () => {
@@ -21,6 +25,16 @@ export const CalendarToolbar = () => {
         setDate((date) => date.subtract({ years: 1 }));
     };
 
+    const handleLanguageChange = (e) => {
+        setLanguageCode(e.target.value);
+    };
+
+    const month = createMemo(() =>
+        date().toLocaleString(languageCode(), {
+            month: "long",
+        }),
+    );
+
     return (
         <>
             <div class="calendar-header">
@@ -30,11 +44,7 @@ export const CalendarToolbar = () => {
                 <button type="button" onClick={prevMonth}>
                     Previous Month
                 </button>
-                <button
-                    type="button"
-                    onClick={resetDate}
-                    disabled={isToday()}
-                >
+                <button type="button" onClick={resetDate} disabled={isToday()}>
                     Today
                 </button>
                 <button type="button" onClick={nextMonth}>
@@ -43,12 +53,21 @@ export const CalendarToolbar = () => {
                 <button type="button" onClick={nextYear}>
                     Next Year
                 </button>
+
+                <select
+                    id="languageSelection"
+                    value={languageCode()}
+                    onChange={handleLanguageChange}
+                >
+                    <option value="en">English</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                    <option value="es">Spanish</option>
+                </select>
             </div>
             <h2>
-                {date().toLocaleString(undefined, {
-                    month: "long",
-                })}{" "}
-                - {date().year}
+                {month()} - {date().year}
             </h2>
         </>
     );

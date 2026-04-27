@@ -3,9 +3,9 @@ import { Temporal } from "temporal-polyfill-lite";
 const today = Temporal.Now.plainDateISO();
 
 const stringToHsl = (title: string): string => {
-    var h,
-        s,
-        l,
+    var h: number,
+        s: number,
+        l: number,
         opts = {
             hue: [0, 360],
             sat: [75, 100],
@@ -13,13 +13,15 @@ const stringToHsl = (title: string): string => {
         };
 
     const range = (hash: number, min: number, max: number) => {
-        var diff = max - min;
-        var x = ((hash % diff) + diff) % diff;
+        const diff = max - min;
+        const x = ((hash % diff) + diff) % diff;
         return x + min;
     };
 
-    var hash = 0;
-    if (title.length === 0) return hash;
+    if (title.length === 0) {
+        return `hsl(0 0 0)`;
+    }
+    let hash = 0;
     for (let i = 0; i < title.length; i++) {
         hash = title.charCodeAt(i) + ((hash << 5) - hash);
         hash = hash & hash;
@@ -138,19 +140,46 @@ const getEventsByDate = (someEvents: Array<Event & { index?: number }>) => {
 };
 
 // AHTODO: is it possible to use Temporal to get this? So when I change the language it is updated?
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const dayDec2025 = Temporal.PlainDate.from("2025-12-01");
+
+// HACK? I know December 2025 goes from 01 - Monday
+// So can get the day name from there.
+export const getDays = (languageCode: string) => {
+    return [
+        dayDec2025.toLocaleString(languageCode, {
+            weekday: "short",
+        }),
+        dayDec2025.add({ days: 1 }).toLocaleString(languageCode, {
+            weekday: "short",
+        }),
+        dayDec2025.add({ days: 2 }).toLocaleString(languageCode, {
+            weekday: "short",
+        }),
+        dayDec2025.add({ days: 3 }).toLocaleString(languageCode, {
+            weekday: "short",
+        }),
+        dayDec2025.add({ days: 4 }).toLocaleString(languageCode, {
+            weekday: "short",
+        }),
+        dayDec2025.add({ days: 5 }).toLocaleString(languageCode, {
+            weekday: "short",
+        }),
+        dayDec2025.add({ days: 6 }).toLocaleString(languageCode, {
+            weekday: "short",
+        }),
+    ];
+};
 
 type Day = (typeof days)[number];
 
-export const getWeeks = (date: Temporal.PlainDate) => {
-    // 1. get days in month
+export const getWeeks = (date: Temporal.PlainDate, languageCode: string) => {
     const daysInMonth = date.daysInMonth;
     // 2. which day is the first of the month?
     const startOfMonth = date.subtract({
         days: date.day - 1,
     });
 
-    const startOfMonthDay = startOfMonth.toLocaleString("en-GB", {
+    const startOfMonthDay = startOfMonth.toLocaleString(languageCode, {
         weekday: "short",
     });
 
@@ -158,7 +187,7 @@ export const getWeeks = (date: Temporal.PlainDate) => {
 
     // type Day = Days[number];
     const getIndexFromDayName = (day: Day): number => {
-        return days.indexOf(day);
+        return getDays(languageCode).indexOf(day);
     };
 
     // 4. Get first day of the month
@@ -201,7 +230,7 @@ export const getWeeks = (date: Temporal.PlainDate) => {
                             day,
                             month,
                             year,
-                            dayOfWeek: todayDate.toLocaleString("en", {
+                            dayOfWeek: todayDate.toLocaleString(languageCode, {
                                 weekday: "long",
                             }),
                         },
