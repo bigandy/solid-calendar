@@ -1,0 +1,97 @@
+table {
+    /* for equal spacing */
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid;
+
+    th,
+    td {
+        border-bottom: 1px solid;
+        /*border: 1px solid;*/
+    }
+
+    th {
+        padding: 1rem;
+    }
+
+    td {
+        vertical-align: top;
+        padding: 0;
+    }
+
+    .cell-title {
+        background: black;
+        color: white;
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    td.isToday {
+        background: greenyellow;
+
+        .cell-title {
+            background: greenyellow;
+            color: black;
+        }
+    }
+}
+
+@container (inline-size < 600px) {
+    table {
+        &,
+        thead,
+        tbody,
+        tr,
+        th,
+        td {
+            display: block;
+        }
+
+        thead {
+            display: none;
+        }
+    }
+}
+
+@container (inline-size > 600px) {
+    th,
+    td {
+        border: 1px solid;
+    }
+
+    .weekday {
+        display: none;
+    }
+}
+
+.events {
+    --event-height: 10px;
+    display: flex;
+    flex-direction: column;
+    height: calc(
+        attr(data-events-count type(<number>)) * var(--event-height) + 20px
+    );
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.event {
+    --event-index: attr(data-event-index type(<number>));
+    height: var(--event-height);
+    width: 100%;
+    background: orangered;
+    position: absolute;
+    top: calc(
+        var(--event-index) * var(--event-height) +
+            calc(var(--event-index) * 10px)
+    );
+}
+
+.event.isFirstDay {
+    border-radius: 1rem 0 0 1rem;
+}
+
+.event.isLastDay {
+    border-radius: 0 1rem 1rem 0;
+}
