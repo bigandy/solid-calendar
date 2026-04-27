@@ -1,4 +1,7 @@
+import calendarStore from "@stores/calendar-store";
 import { Temporal } from "temporal-polyfill-lite";
+
+const { date, languageCode } = calendarStore;
 
 const today = Temporal.Now.plainDateISO();
 
@@ -56,7 +59,8 @@ const getRange = ({
     return dateRange;
 };
 
-type Event = {
+type CalendarEvent = {
+    index?: number;
     title: string;
     start: Temporal.PlainDate;
     end: Temporal.PlainDate;
@@ -64,7 +68,7 @@ type Event = {
     backgroundColor: string;
 };
 
-const someEvents: Array<Event> = [
+const someEvents: Array<CalendarEvent> = [
     {
         title: "Event One",
         start: today,
@@ -108,7 +112,7 @@ const someEvents: Array<Event> = [
 ];
 
 // Events that occur in this month
-const getMonthEvents = (someEvents: Array<Event>, month: number) => {
+const getMonthEvents = (someEvents: Array<CalendarEvent>, month: number) => {
     return someEvents.filter((event) => {
         return (
             event.range.filter((eventDate) => {
@@ -118,8 +122,8 @@ const getMonthEvents = (someEvents: Array<Event>, month: number) => {
     });
 };
 
-const getEventsByDate = (someEvents: Array<Event & { index?: number }>) => {
-    const events = {};
+const getEventsByDate = (someEvents: Array<CalendarEvent>) => {
+    const events: Record<string, Array<CalendarEvent>> = {};
     someEvents.forEach((event, index) => {
         const outputEvent = {
             ...event,
@@ -128,6 +132,7 @@ const getEventsByDate = (someEvents: Array<Event & { index?: number }>) => {
 
         event.range.forEach((eventDate) => {
             const date = eventDate.toString();
+
             if (!events[date]) {
                 events[date] = [outputEvent];
             } else {
@@ -144,42 +149,42 @@ const dayDec2025 = Temporal.PlainDate.from("2025-12-01");
 
 // HACK? I know December 2025 goes from 01 - Monday
 // So can get the day name from there.
-export const getDays = (languageCode: string) => {
+export const getDays = () => {
     return [
-        dayDec2025.toLocaleString(languageCode, {
+        dayDec2025.toLocaleString(languageCode(), {
             weekday: "short",
         }),
-        dayDec2025.add({ days: 1 }).toLocaleString(languageCode, {
+        dayDec2025.add({ days: 1 }).toLocaleString(languageCode(), {
             weekday: "short",
         }),
-        dayDec2025.add({ days: 2 }).toLocaleString(languageCode, {
+        dayDec2025.add({ days: 2 }).toLocaleString(languageCode(), {
             weekday: "short",
         }),
-        dayDec2025.add({ days: 3 }).toLocaleString(languageCode, {
+        dayDec2025.add({ days: 3 }).toLocaleString(languageCode(), {
             weekday: "short",
         }),
-        dayDec2025.add({ days: 4 }).toLocaleString(languageCode, {
+        dayDec2025.add({ days: 4 }).toLocaleString(languageCode(), {
             weekday: "short",
         }),
-        dayDec2025.add({ days: 5 }).toLocaleString(languageCode, {
+        dayDec2025.add({ days: 5 }).toLocaleString(languageCode(), {
             weekday: "short",
         }),
-        dayDec2025.add({ days: 6 }).toLocaleString(languageCode, {
+        dayDec2025.add({ days: 6 }).toLocaleString(languageCode(), {
             weekday: "short",
         }),
     ];
 };
 
-type Day = (typeof days)[number];
+type Day = string[number];
 
-export const getWeeks = (date: Temporal.PlainDate, languageCode: string) => {
-    const daysInMonth = date.daysInMonth;
+export const getWeeks = () => {
+    const daysInMonth = date().daysInMonth;
     // 2. which day is the first of the month?
-    const startOfMonth = date.subtract({
-        days: date.day - 1,
+    const startOfMonth = date().subtract({
+        days: date().day - 1,
     });
 
-    const startOfMonthDay = startOfMonth.toLocaleString(languageCode, {
+    const startOfMonthDay = startOfMonth.toLocaleString(languageCode(), {
         weekday: "short",
     });
 
@@ -187,14 +192,14 @@ export const getWeeks = (date: Temporal.PlainDate, languageCode: string) => {
 
     // type Day = Days[number];
     const getIndexFromDayName = (day: Day): number => {
-        return getDays(languageCode).indexOf(day);
+        return getDays().indexOf(day);
     };
 
     // 4. Get first day of the month
     const firstDayofMonth = getIndexFromDayName(startOfMonthDay as Day);
 
     // 5. Filter Events that only happen in this month.
-    const thisMonthsEvents = getMonthEvents(someEvents, date.month);
+    const thisMonthsEvents = getMonthEvents(someEvents, date().month);
     // console.log({ thisMonthsEvents });
 
     const eventsByDate = getEventsByDate(thisMonthsEvents);
@@ -224,15 +229,18 @@ export const getWeeks = (date: Temporal.PlainDate, languageCode: string) => {
 
                     return {
                         thisMonthsEventsCount: thisMonthsEvents.length,
-                        events: eventsByDate[todayDate],
+                        events: eventsByDate[todayDate.toString()],
                         dayNumber,
                         date: {
                             day,
                             month,
                             year,
-                            dayOfWeek: todayDate.toLocaleString(languageCode, {
-                                weekday: "long",
-                            }),
+                            dayOfWeek: todayDate.toLocaleString(
+                                languageCode(),
+                                {
+                                    weekday: "long",
+                                },
+                            ),
                         },
                         isToday: todayDate.equals(today),
                     };

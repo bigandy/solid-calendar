@@ -1,12 +1,9 @@
 import { createMemo } from "solid-js";
 
-import languageStore from "./language-store";
 import { getDays } from "./utils";
 
-const { languageCode } = languageStore;
-
 export const CalendarHeader = () => {
-    const days = createMemo(() => getDays(languageCode()));
+    const days = createMemo(() => getDays());
 
     return (
         <thead>

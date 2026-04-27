@@ -1,9 +1,28 @@
+select,
+::picker(select) {
+    appearance: base-select;
+}
+
+select,
+button {
+    cursor: pointer;
+}
+
 .calendar-header {
     display: flex;
     place-content: center;
     align-items: center;
     gap: 1rem;
     margin-block: 1rem;
+
+    @container (inline-size < 600px) {
+        flex-direction: column;
+
+        button,
+        select {
+            width: 100%;
+        }
+    }
 
     button {
         padding: 1rem;
@@ -23,9 +42,9 @@
 
     option {
         font-family: var(--sans);
-        /* Not working?! */
         text-align: center;
         display: block;
+        padding: 1rem;
     }
 
     option:checked {
@@ -39,9 +58,8 @@
     + h2 {
         margin-block-end: 1rem;
     }
-}
 
-select,
-::picker(select) {
-    appearance: base;
+    .icon {
+        margin-right: 0.5rem;
+    }
 }

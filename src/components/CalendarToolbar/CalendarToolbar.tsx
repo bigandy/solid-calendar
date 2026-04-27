@@ -1,12 +1,10 @@
+import calendarStore from "@stores/calendar-store";
 import { createMemo } from "solid-js";
-import calendarStore from "../calendar-store";
-import languageStore from "../language-store";
 
 import "./style.css";
 
-const { date, setDate, isToday, resetDate } = calendarStore;
-
-const { languageCode, setLanguageCode } = languageStore;
+const { date, setDate, isToday, resetDate, languageCode, setLanguageCode } =
+    calendarStore;
 
 export const CalendarToolbar = () => {
     const prevMonth = () => {
@@ -25,8 +23,11 @@ export const CalendarToolbar = () => {
         setDate((date) => date.subtract({ years: 1 }));
     };
 
-    const handleLanguageChange = (e) => {
-        setLanguageCode(e.target.value);
+    const handleLanguageChange = (event: Event) => {
+        const target = event.target as HTMLSelectElement;
+        if (target?.value) {
+            setLanguageCode(target.value);
+        }
     };
 
     const month = createMemo(() =>
@@ -59,11 +60,39 @@ export const CalendarToolbar = () => {
                     value={languageCode()}
                     onChange={handleLanguageChange}
                 >
-                    <option value="en">English</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="it">Italian</option>
-                    <option value="es">Spanish</option>
+                    <button>
+                        <selectedcontent></selectedcontent>
+                    </button>
+                    <option value="en">
+                        <span class="icon" aria-hidden="true">
+                            🇬🇧
+                        </span>
+                        English
+                    </option>
+                    <option value="fr">
+                        <span class="icon" aria-hidden="true">
+                            🇫🇷
+                        </span>
+                        French
+                    </option>
+                    <option value="de">
+                        <span class="icon" aria-hidden="true">
+                            🇩🇪
+                        </span>
+                        German
+                    </option>
+                    <option value="it">
+                        <span class="icon" aria-hidden="true">
+                            🇮🇹
+                        </span>
+                        Italian
+                    </option>
+                    <option value="es">
+                        <span class="icon" aria-hidden="true">
+                            🇪🇸
+                        </span>
+                        Spanish
+                    </option>
                 </select>
             </div>
             <h2>
