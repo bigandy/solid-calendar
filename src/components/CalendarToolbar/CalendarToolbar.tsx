@@ -61,7 +61,7 @@ export const CalendarToolbar = () => {
                     onChange={handleLanguageChange}
                 >
                     <button>
-                        <selectedcontent></selectedcontent>
+                        <selectedcontent />
                     </button>
                     <option value="en">
                         <span class="icon" aria-hidden="true">
