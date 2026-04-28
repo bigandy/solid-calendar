@@ -3,8 +3,9 @@ import { createMemo } from "solid-js";
 
 import "./style.css";
 
-const { date, setDate, isToday, resetDate, languageCode, setLanguageCode } =
-    calendarStore;
+const { date, setDate, isToday, resetDate, languageCode } = calendarStore;
+
+import { LanguageSelector } from "@components/LanguageSelector";
 
 export const CalendarToolbar = () => {
     const prevMonth = () => {
@@ -21,13 +22,6 @@ export const CalendarToolbar = () => {
 
     const prevYear = () => {
         setDate((date) => date.subtract({ years: 1 }));
-    };
-
-    const handleLanguageChange = (event: Event) => {
-        const target = event.target as HTMLSelectElement;
-        if (target?.value) {
-            setLanguageCode(target.value);
-        }
     };
 
     const month = createMemo(() =>
@@ -55,45 +49,7 @@ export const CalendarToolbar = () => {
                     Next Year
                 </button>
 
-                <select
-                    id="languageSelection"
-                    value={languageCode()}
-                    onChange={handleLanguageChange}
-                >
-                    <button>
-                        <selectedcontent />
-                    </button>
-                    <option value="en">
-                        <span class="icon" aria-hidden="true">
-                            🇬🇧
-                        </span>
-                        English
-                    </option>
-                    <option value="fr">
-                        <span class="icon" aria-hidden="true">
-                            🇫🇷
-                        </span>
-                        French
-                    </option>
-                    <option value="de">
-                        <span class="icon" aria-hidden="true">
-                            🇩🇪
-                        </span>
-                        German
-                    </option>
-                    <option value="it">
-                        <span class="icon" aria-hidden="true">
-                            🇮🇹
-                        </span>
-                        Italian
-                    </option>
-                    <option value="es">
-                        <span class="icon" aria-hidden="true">
-                            🇪🇸
-                        </span>
-                        Spanish
-                    </option>
-                </select>
+                <LanguageSelector />
             </div>
             <h2>
                 {month()} - {date().year}

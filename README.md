@@ -1,3 +1,10 @@
+# Calendar component with Solid-js and Temporal APIs
+
+- Dates with `Temporal` api and `.toLocaleString()` and language selector for weekday and month name localisation (i18n);
+- Temporal Polyfill for browsers that don't support Temporal
+- Signals for the state
+- New customisable select with new CSS / HTML [https://una.im/select-updates]() which is currently Chrome / Edge / Safari TP but not in Firefox.
+
 ## Usage
 
 ```bash
